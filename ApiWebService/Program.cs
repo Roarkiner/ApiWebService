@@ -1,7 +1,6 @@
 using ApiWebService;
 using ApiWebService.Contracts;
 using ApiWebService.Services;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +11,9 @@ services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
-
-services.AddDbContext<DataContext>(ServiceLifetime.Scoped);
-services.AddScoped<INoteService, NoteService>();
+services.AddDbContext<DataContext>();
 services.AddScoped<IPersonService, PersonService>();
+services.AddScoped<INoteService, NoteService>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

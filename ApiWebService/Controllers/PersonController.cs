@@ -1,5 +1,7 @@
-﻿using ApiWebService.Contracts;
+﻿using ApiWebService.Api.Extensions;
+using ApiWebService.Contracts;
 using ApiWebService.Models.DataModels;
+using ApiWebService.Models.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiWebService.Controllers
@@ -16,33 +18,73 @@ namespace ApiWebService.Controllers
         }
 
         [HttpGet("{id}")]
-        public Person GetPerson(Guid id)
+        public async Task<ActionResult<PersonResultModel>> GetPerson(Guid id)
         {
-            return _personService.GetPersonById(id);
+            var person = await _personService.GetPersonByIdAsync(id);
+
+            if (person == null)
+                return NotFound();
+
+            return Ok(new PersonResultModel
+            {
+                Id = person.Id,
+                Email = person.Email
+            });
         }
 
         [HttpGet]
-        public IEnumerable<Person> GetAllPersons()
+        public async Task<IEnumerable<PersonResultModel>> GetAllPersons([FromQuery] int pageNumber = 1)
         {
-            return _personService.GetPersons();
+            var persons = await _personService.GetAllPersonsAsync(new GetPersonsRequestModel
+            {
+                PageNumber = pageNumber,
+                PageSize = 20
+            });
+
+            return persons.Select(n => new PersonResultModel
+            {
+                Id = n.Id,
+                Email = n.Email
+            });
         }
 
         [HttpPost]
-        public void SavePerson(Person person) 
+        public async Task<ActionResult<PersonResultModel>> SavePerson([FromBody] PersonSaveModel person)
         {
-            _personService.SavePerson(person);
+            try
+            {
+                var createdPerson = await _personService.SavePersonAsync(person);
+                return this.Created(HttpContext, nameof(GetPerson), createdPerson, createdPerson.Id.ToString());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public void UpdatePerson(Person person) 
+        public async Task<IActionResult> UpdatePerson(Guid id, [FromBody] PersonUpdateModel person)
         {
-            _personService.UpdatePerson(person);
+            try
+            {
+                await _personService.UpdatePersonAsync(person, id);
+                return NoContent();
+            }
+            catch (ArgumentException)
+            {
+                return NotFound(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public void DeletePerson(Guid id) 
+        public async Task<IActionResult> DeletePerson(Guid id)
         {
-            _personService.DeletePerson(id);
+            await _personService.DeletePersonAsync(id);
+            return NoContent();
         }
     }
 }

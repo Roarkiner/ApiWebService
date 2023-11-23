@@ -1,9 +1,8 @@
 ﻿namespace ApiWebService.Models.RequestModels
 {
-    public class NoteModel
+    public class NoteSaveModel
     {
-        public Guid Id { get; set; }
-        public string? Title { get; set; }
+        public string Title { get; set; } = null!;
         public string? Content { get; set; }
         public Guid PersonId { get; set; }
     }

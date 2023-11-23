@@ -7,8 +7,9 @@ namespace ApiWebService.Contracts
     {
         Task<Note?> GetNoteByIdAsync(Guid noteId);
         Task<List<Note>> GetNotesForUserAsync(GetNotesRequestModel requestModel);
-        Task<Note> SaveNoteAsync(NoteModel newNote);
-        Task UpdateNoteAsync(NoteModel updateNote);
+        Task<List<Note>> GetAllNotesAsync(GetNotesRequestModel requestModel);
+        Task<Note> SaveNoteAsync(NoteSaveModel newNote);
+        Task UpdateNoteAsync(NoteUpdateModel updateNote, Guid noteId);
         Task DeleteNoteAsync(Guid noteId);
     }
 }

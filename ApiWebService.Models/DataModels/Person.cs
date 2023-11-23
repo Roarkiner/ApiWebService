@@ -6,9 +6,9 @@ namespace ApiWebService.Models.DataModels
     {
         public Guid Id { get; set; }
         [Required]
-        public string FirstName { get; set; }
+        public string Email { get; set; } = null!;
         [Required]
-        public string LastName { get; set; }
-        public List<Note> Notes { get; set; } = new List<Note>();
+        public string Password { get; set; } = null!;
+        public bool IsDeleted { get; set; }
     }
 }

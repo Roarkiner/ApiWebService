@@ -15,7 +15,8 @@ public class DataContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseSqlServer(Configuration.GetConnectionString("Database"));
+        options.UseSqlServer(Configuration.GetConnectionString("Database"),
+            o => o.MigrationsAssembly("ApiWebService.Api"));
     }
 
     public DbSet<Note> Notes { get; set; }
