@@ -1,0 +1,80 @@
+#root {
+  text-align: center;
+}
+
+canvas {
+  border: 1px solid black;
+}
+
+.canva-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  padding-bottom: 1rem;
+}
+
+.color-button {
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  padding: 3px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.color-button div {
+  width: 100%;
+  height: 100%;
+}
+
+.delete-button {
+  width: 27px;
+  height: 27px;
+  cursor: pointer;
+}
+
+.delete-button-img {
+  width: 17px;
+  height: 17px;
+}
+
+.color-picker {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.current-color {
+  height: 16px;
+  width: 30px;
+  border-radius: 3px;
+  margin-left: 0.8em;
+}
+
+.current-color-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error {
+  color: red;
+}
+
+main {
+  width: 70vw;
+}
+
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100vw;
+}
+
+aside {
+  border-left: 1px solid black;
+  width: 30vw;
+  background-color: azure;
+  position: relative;
+}

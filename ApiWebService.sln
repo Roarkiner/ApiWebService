@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "�
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiWebService.Services.Tests", "ApiWebService.Services.Tests\ApiWebService.Services.Tests.csproj", "{83AC4139-E84D-4101-9F7A-D6F3FF338B85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{C02A03C7-F3AE-4034-8E41-DE19CDF30F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C02A03C7-F3AE-4034-8E41-DE19CDF30F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C02A03C7-F3AE-4034-8E41-DE19CDF30F22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83AC4139-E84D-4101-9F7A-D6F3FF338B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83AC4139-E84D-4101-9F7A-D6F3FF338B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83AC4139-E84D-4101-9F7A-D6F3FF338B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83AC4139-E84D-4101-9F7A-D6F3FF338B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

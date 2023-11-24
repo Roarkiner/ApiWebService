@@ -1,0 +1,47 @@
+.username-header {
+    font-weight: bold;
+}
+
+.chat-container {
+    padding: 1em;
+    max-height: 90vh;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.message {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 1em;
+    background-color: white;
+    text-align: left;
+    width: 60%;
+    margin-bottom: 10px;
+}
+
+.message p {
+    margin: 0;
+    word-break: break-all;
+}
+
+.send-message {
+    position: absolute;
+    bottom: 0;
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.message-input {
+    width: 100%;
+}
+
+.send-button {
+    margin-top: 10px;
+    width: 20%;
+}
+
+.my-message {
+    background-color: rgb(233, 195, 168);
+}
