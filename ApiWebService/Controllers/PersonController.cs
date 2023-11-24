@@ -1,39 +1,53 @@
 ﻿using ApiWebService.Api.Extensions;
 using ApiWebService.Contracts;
-using ApiWebService.Models.DataModels;
 using ApiWebService.Models.RequestModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiWebService.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class PersonController : Controller
+    [Authorize]
+    public class PersonController : ControllerBase
     {
         private readonly IPersonService _personService;
+        private readonly IETagService _etagService;
 
-        public PersonController(IPersonService personService)
+        public PersonController(IPersonService personService, IETagService etagService)
         {
             _personService = personService;
+            _etagService = etagService;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PersonResultModel>> GetPerson(Guid id)
+        public async Task<IResult> GetPerson(Guid id)
         {
             var person = await _personService.GetPersonByIdAsync(id);
-
+            
             if (person == null)
-                return NotFound();
+                return Results.NotFound();
 
-            return Ok(new PersonResultModel
+            var result = new PersonResultModel
             {
                 Id = person.Id,
                 Email = person.Email
+            };
+
+            var etag = _etagService.GenerateETag(result);
+
+            if (HttpContext.Request.Headers.IfNoneMatch == etag)
+                return Results.StatusCode(304);
+
+            return Results.Ok(new
+            {
+                Result = result,
+                ETag = etag
             });
         }
 
         [HttpGet]
-        public async Task<IEnumerable<PersonResultModel>> GetAllPersons([FromQuery] int pageNumber = 1)
+        public async Task<IResult> GetAllPersons([FromQuery] int pageNumber = 1)
         {
             var persons = await _personService.GetAllPersonsAsync(new GetPersonsRequestModel
             {
@@ -41,10 +55,21 @@ namespace ApiWebService.Controllers
                 PageSize = 20
             });
 
-            return persons.Select(n => new PersonResultModel
+            var result = persons.Select(n => new PersonResultModel
             {
                 Id = n.Id,
                 Email = n.Email
+            });
+
+            var etag = _etagService.GenerateETag(result);
+
+            if (HttpContext.Request.Headers.IfNoneMatch == etag)
+                return Results.StatusCode(304);
+
+            return Results.Ok(new
+            {
+                Result = result,
+                ETag = etag
             });
         }
 

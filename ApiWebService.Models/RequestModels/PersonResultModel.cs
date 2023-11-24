@@ -1,8 +1,7 @@
-﻿namespace ApiWebService.Models.RequestModels
+﻿namespace ApiWebService.Models.RequestModels;
+
+public class PersonResultModel
 {
-    public class PersonResultModel
-    {
-        public Guid Id { get; set; }
-        public string Email { get; set; } = null!;
-    }
+    public Guid Id { get; set; }
+    public string Email { get; set; } = null!;
 }

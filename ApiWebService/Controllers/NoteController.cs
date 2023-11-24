@@ -2,39 +2,54 @@
 using ApiWebService.Models.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 using ApiWebService.Api.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Azure;
 
 namespace ApiWebService.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class NoteController : Controller
+    [Authorize]
+    public class NoteController : ControllerBase
     {
         private readonly INoteService _noteService;
+        private readonly IETagService _etagService;
 
-        public NoteController(INoteService noteService)
+        public NoteController(INoteService noteService, IETagService etagService)
         {
             _noteService = noteService;
+            _etagService = etagService;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<NoteResultModel>> GetNote(Guid id)
+        public async Task<IResult> GetNote(Guid id)
         {
             var note = await _noteService.GetNoteByIdAsync(id);
 
             if (note == null)
-                return NotFound();
+                return Results.NotFound();
 
-            return Ok(new NoteResultModel
+            var result = new NoteResultModel
             {
                 Id = note.Id,
                 Content = note.Content,
                 Title = note.Title,
                 PersonId = note.PersonId
+            };
+
+            var etag = _etagService.GenerateETag(result);
+
+            if (HttpContext.Request.Headers.IfNoneMatch == etag)
+                return Results.StatusCode(304);
+
+            return Results.Ok(new { 
+                Result = result,
+                ETag = etag
             });
         }
 
-        [HttpGet("{id}")]
-        public async Task<IEnumerable<NoteResultModel>> GetNotesForUser(Guid id, [FromQuery] int pageNumber = 1)
+        [HttpGet("{id:Guid}")]
+        public async Task<IResult> GetNotesForUser(Guid id, [FromQuery] int pageNumber = 1)
         {
             var notes = await _noteService.GetNotesForUserAsync(new GetNotesRequestModel
             {
@@ -42,17 +57,27 @@ namespace ApiWebService.Controllers
                 PageNumber = pageNumber,
             });
 
-            return notes.Select(n => new NoteResultModel
+            var result = notes.Select(n => new NoteResultModel
             {
                 Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
                 PersonId = n.PersonId,
             });
+
+            var etag = _etagService.GenerateETag(result);
+
+            if (HttpContext.Request.Headers.IfNoneMatch == etag)
+                return Results.StatusCode(304);
+
+            return Results.Ok(new {
+                Result = result,
+                ETag = etag
+            });
         }
 
         [HttpGet]
-        public async Task<IEnumerable<NoteResultModel>> GetAllNotes([FromQuery] int pageNumber = 1)
+        public async Task<IResult> GetAllNotes([FromQuery] int pageNumber = 1)
         {
             var notes = await _noteService.GetAllNotesAsync(new GetNotesRequestModel
             {
@@ -60,17 +85,28 @@ namespace ApiWebService.Controllers
                 PageSize = 20
             });
 
-            return notes.Select(n => new NoteResultModel
+            var result = notes.Select(n => new NoteResultModel
             {
                 Id = n.Id,
                 Title = n.Title,
                 Content = n.Content,
                 PersonId = n.PersonId,
             });
+
+            var etag = _etagService.GenerateETag(result);
+
+            if (HttpContext.Request.Headers.IfNoneMatch == etag)
+                return Results.StatusCode(304);
+
+            return Results.Ok(new
+            {
+                Result = result,
+                ETag = etag
+            });
         }
 
         [HttpPost]
-        public async Task<ActionResult<NoteResultModel>> SaveNote([FromBody] NoteSaveModel note)
+        public async Task<IActionResult> SaveNote([FromBody] NoteSaveModel note)
         {
             try
             {
